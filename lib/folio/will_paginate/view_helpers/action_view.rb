@@ -6,6 +6,5 @@ end
 
 require 'folio/will_paginate/view_helpers'
 
-# TODO: this file will patch up will_paginate's ActionView specific view helper
-# stuff to work with Folio::Pages rather than WillPaginate::Collections, if
-# necessary
+# no overrides specific to action view necessary. just including the general
+# view_helper overrides as above is sufficient.
