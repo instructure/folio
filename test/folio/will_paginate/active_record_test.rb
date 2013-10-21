@@ -40,33 +40,22 @@ describe ActiveRecord do
       page.is_a?(Folio::Ordinal::Page).must_equal true
     end
 
-    it "should still return a relation" do
-      page = Item.paginate
-      page.is_a?(ActiveRecord::Relation).must_equal true
-    end
-
-    it "should set limit_value according to per_page" do
-      page = Item.paginate(per_page: 10)
-      page.limit_value.must_equal 10
-    end
-
-    it "should use that limit_value as per_page attribute" do
+    it "should set per_page from parameter" do
       page = Item.paginate(per_page: 10)
       page.per_page.must_equal 10
     end
 
-    it "should default limit_value/per_page to model's per_page" do
+    it "should default per_page to model's per_page" do
       was = Item.per_page
       Item.per_page = 10
       page = Item.paginate
-      page.limit_value.must_equal 10
       page.per_page.must_equal 10
       Item.per_page = was
     end
 
     it "should set offset from page and per_page" do
       page = Item.paginate(page: 3, per_page: 10)
-      page.offset_value.must_equal 20
+      page.offset.must_equal 20
     end
 
     it "should set current_page" do
@@ -74,19 +63,14 @@ describe ActiveRecord do
       page.current_page.must_equal 3
     end
 
-    it "should have the right count on the unloaded page" do
-      page = Item.paginate(page: 3, per_page: 10)
-      page.count.must_equal 4
-    end
-
-    it "should have the right size on the unloaded page" do
+    it "should have the right size on the page" do
       page = Item.paginate(page: 3, per_page: 10)
       page.size.must_equal 4
     end
 
     it "should return the expected items" do
       page = Item.paginate(page: 3, per_page: 10)
-      page.to_a.must_equal Item.offset(20).all
+      page.to_a.must_equal Item.find(:all, offset: 20, limit: 10)
     end
 
     it "should auto-count total_entries unless specified as nil" do
@@ -94,18 +78,23 @@ describe ActiveRecord do
       page.total_entries.must_equal 24
     end
 
-    it "should work with total_entries nil" do
+    it "should not auto-count total_entries when specified as nil and not last page" do
+      page = Item.paginate(per_page: 10, total_entries: nil)
+      page.total_entries.must_be_nil
+    end
+
+    it "should calculate total_entries when specified as nil but last page" do
+      page = Item.paginate(page: 3, per_page: 10, total_entries: nil)
+      page.total_entries.must_equal 24
+    end
+
+    it "should still work with total_entries nil" do
       page = Item.paginate(page: 3, total_entries: nil)
       page.current_page.must_equal 3
     end
 
     it "should validate page number against auto-counted total_entries" do
       lambda{ Item.paginate(page: 4, per_page: 10) }.must_raise Folio::InvalidPage
-    end
-
-    it "should work on relations" do
-      page = Item.where(filter: true).paginate(page: 2, per_page: 10)
-      page.count.must_equal 2
     end
 
     it "should work on associations" do

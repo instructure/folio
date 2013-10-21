@@ -7,9 +7,9 @@ group :development do
 end
 
 group :will_paginate do
-  gem 'actionpack', '>= 3.0'
-  gem 'activerecord', '>= 3.0'
-  gem 'will_paginate', '~> 3.0'
+  gem 'activerecord', '~> 2.3.6'
+  gem 'actionpack', '~> 2.3.6'
+  gem 'will_paginate', '~> 2.3'
 end
 
 group :test do
