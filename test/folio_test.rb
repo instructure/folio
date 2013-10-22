@@ -44,6 +44,7 @@ describe Folio do
       def fill_page(page)
         page.next_page = :next
         page.previous_page = :previous
+        page
       end
 
       include Folio

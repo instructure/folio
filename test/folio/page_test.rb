@@ -1,17 +1,17 @@
 require 'minitest/autorun'
 require 'folio/page'
+require 'folio'
 
 describe Folio::Page do
   before do
-    klass = Class.new{ include Folio::Page }
-    @page = klass.new
+    @page = Folio::Page.create
   end
 
   describe "ordinal_pages" do
     it "should have ordinal_pages accessors" do
-      @page.must_respond_to :ordinal_pages
-      @page.must_respond_to :ordinal_pages=
-      @page.must_respond_to :ordinal_pages?
+      assert_respond_to @page, :ordinal_pages
+      assert_respond_to @page, :ordinal_pages=
+      assert_respond_to @page, :ordinal_pages?
     end
 
     it "should mutate with ordinal_pages=" do
@@ -27,8 +27,8 @@ describe Folio::Page do
 
   describe "current_page" do
     it "should have current_page accessors" do
-      @page.must_respond_to :current_page
-      @page.must_respond_to :current_page=
+      assert_respond_to @page, :current_page
+      assert_respond_to @page, :current_page=
     end
 
     it "should mutate with current_page=" do
@@ -39,8 +39,8 @@ describe Folio::Page do
 
   describe "per_page" do
     it "should have per_page accessors" do
-      @page.must_respond_to :per_page
-      @page.must_respond_to :per_page=
+      assert_respond_to @page, :per_page
+      assert_respond_to @page, :per_page=
     end
 
     it "should mutate with per_page=" do
@@ -51,8 +51,8 @@ describe Folio::Page do
 
   describe "first_page" do
     it "should have first_page accessors" do
-      @page.must_respond_to :first_page
-      @page.must_respond_to :first_page=
+      assert_respond_to @page, :first_page
+      assert_respond_to @page, :first_page=
     end
 
     it "should mutate with first_page=" do
@@ -63,8 +63,8 @@ describe Folio::Page do
 
   describe "last_page" do
     it "should have last_page accessors" do
-      @page.must_respond_to :last_page
-      @page.must_respond_to :last_page=
+      assert_respond_to @page, :last_page
+      assert_respond_to @page, :last_page=
     end
 
     it "should mutate with last_page= when next_page is non-nil" do
@@ -96,8 +96,8 @@ describe Folio::Page do
 
   describe "next_page" do
     it "should have next_page accessors" do
-      @page.must_respond_to :next_page
-      @page.must_respond_to :next_page=
+      assert_respond_to @page, :next_page
+      assert_respond_to @page, :next_page=
     end
 
     it "should mutate with next_page=" do
@@ -108,8 +108,8 @@ describe Folio::Page do
 
   describe "previous_page" do
     it "should have previous_page accessors" do
-      @page.must_respond_to :previous_page
-      @page.must_respond_to :previous_page=
+      assert_respond_to @page, :previous_page
+      assert_respond_to @page, :previous_page=
     end
 
     it "should mutate with previous_page=" do
@@ -120,8 +120,8 @@ describe Folio::Page do
 
   describe "total_entries" do
     it "should have total_entries accessors" do
-      @page.must_respond_to :total_entries
-      @page.must_respond_to :total_entries=
+      assert_respond_to @page, :total_entries
+      assert_respond_to @page, :total_entries=
     end
 
     it "should mutate with total_entries=" do
@@ -138,11 +138,6 @@ describe Folio::Page do
 
     it "should be nil if total_entries is nil" do
       @page.total_entries = nil
-      @page.total_pages.must_be_nil
-    end
-
-    it "should be nil if per_page is nil" do
-      @page.per_page = nil
       @page.total_pages.must_be_nil
     end
 
@@ -163,6 +158,34 @@ describe Folio::Page do
     it "should round up if not evenly divisible" do
       @page.per_page = 3
       @page.total_pages.must_equal 4
+    end
+  end
+
+  describe "decorate" do
+    before do
+      @page = Folio::Page.decorate([])
+    end
+
+    it "should add page methods to the object" do
+      assert_respond_to @page, :current_page
+    end
+
+    it "should preserve other methods on the object" do
+      assert_respond_to @page, :each
+    end
+  end
+
+  describe "create" do
+    before do
+      @page = Folio::Page.create
+    end
+
+    it "should be an Array at heart" do
+      @page.must_be :is_a?, Array
+    end
+
+    it "should be decorated as a page" do
+      assert_respond_to @page, :current_page
     end
   end
 end

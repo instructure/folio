@@ -39,10 +39,15 @@ module Folio
   # the count method.
   def paginate(options={})
     page = self.build_page
+    page = self.configure_pagination(page, options)
+    page = self.fill_page(page)
+    page
+  end
+
+  def configure_pagination(page, options)
     page.current_page = options.fetch(:page) { page.first_page }
     page.per_page = options.fetch(:per_page) { self.per_page }
     page.total_entries = options.fetch(:total_entries) { self.respond_to?(:count) ? self.count : nil }
-    self.fill_page(page)
     page
   end
 
@@ -73,5 +78,4 @@ end
 
 # load the other commonly used portions of the gem
 require "folio/page"
-require "folio/basic_page"
 require "folio/ordinal"

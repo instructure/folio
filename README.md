@@ -120,35 +120,77 @@ The `per_page` attribute added to the folio instance will default to the
 class attribute added to the folio class will default to global
 `Folio.per_page` when unset.
 
-### Ordinal Folios
+### Ordinal Pages and Folios
 
 A typical use case for pagination deals with ordinal page identifiers;
 e.g. "1" means the first page, "2" means the second page, etc.
 
-As a matter of convenience for these use cases, an additional mixin is
-provided: `Folio::Ordinal`.
+As a matter of convenience for these use cases, additional mixins of
+`Folio::Ordinal` and `Folio::Ordinal::Page` are provided.
 
-Mixing this into your source instead of `Folio` has the same
-requirements and benefits, except the responsibilities of the
-`build_page` and `fill_page` methods are narrowed.
+Mixing `Folio::Ordinal::Page` into an `Enumerable` provides the same
+methods as `Folio::Page` but with the following overrides:
 
-`build_page` no longer needs to configure `ordinal_page?`, `first_page`,
-or `last_page` on the instantiated page, as these values can all be
-inferred. `ordinal_page?` will be set true and `first_page` set to 1,
-while the `last_page` attribute is replaced by an alias to
-`total_pages`. The method now simply needs to choose a type of
-`Folio::Page` to instantiate and return it.
+ * `ordinal_pages` is always true
 
-Similarly, `fill_page` no longer needs to configure `next_page` and
-`last_page`; they will be calculated from `current_page`, `first_page`,
-and `last_page`. Instead, the method can focus entirely on populating
-the page.
+ * `first_page` is always 1
 
-### Basic Page
+ * `previous_page` is always either `current_page-1` or nil, depending
+   on how `current_page` relates to `first_page`.
 
-As a minimal example and default simple implementation, we provide
-`Folio::BasicPage`, which is simply a subclass of Array extended with
-the `Folio::Page` mixin.
+ * `next_page` can only be set if `total_pages` is unknown. if
+   `total_pages` is known, `next_page` will be either `current_page+1`
+   or nil, depending on how `current_page` relates to `last_page`. if
+   `total_pages` is unknown and `next_page` is unset (vs. explicitly set
+   to nil), it will default to `current_page+1`.
+
+ * `last_page` is deterministic: always `total_pages` if `total_pages`
+   is known, `current_page` if `total_pages` is unknown and `next_page`
+   is nil, nil otherwise (indicating the page sequence continues until
+   `next_page` is nil).
+
+Similarly, mixing `Folio::Ordinal` into a source provides the same
+methods as `Folio`, but simplifies your `build_page` and `fill_page`
+methods by moving some responsibility into the `paginate` method.
+
+ * `build_page` no longer needs to configure `ordinal_page?`, `first_page`,
+   or `last_page` on the instantiated page. Instead, just instantiate
+   and return a `Folio::Page` or `Folio::Ordinal::Page`. If what you
+   return is not a `Folio::Ordinal::Page`, `paginate` will decorate it
+   to be one. Then `ordinal_page?`, `first_page`, and `last_page` are
+   handled for you, as described above.
+
+ * `fill_page` no longer needs to configure `next_page` and
+   `previous_page`; the ordinal page will handle them. (Note that if
+   necessary, you can still set `next_page` explicitly to nil.) Also,
+   `paginate` will now perform ordinal bounds checking for you, so you
+   can focus entirely on populating the page.
+
+### Decorations and `create`
+
+Often times you just want to take a simple collection, such as an
+array, and have it act like a page. One way would be to subclass
+`Array` and mixin `Folio::Page`, then instantiate the subclass.
+
+Alternately, you can just call `Folio::Page.decorate(collection)`. This
+will decorate the collection instance in a delegate that mixes in
+`Folio::Page` for you. So, for example, a simple `build_page` method
+could just be:
+
+```
+  def build_page
+    Folio::Page.decorate([])
+  end
+```
+
+For the common case where a new empty array is what you intend to
+decorate, you can simply call `Folio::Page.create`.
+
+`Folio::Page::Ordinal.decorate(collection)` and
+`Folio::Page::Ordinal.create` are also available, respectively, for the
+ordinal case. `decorate` will assume the passed in collection lacks any
+pagination and will include `Folio::Page` along with
+`Folio::Page::Ordinal`.
 
 ### Enumerable Extension
 
@@ -156,11 +198,10 @@ If you require `folio/core_ext/enumerable`, all `Enumerable`s will be
 extended with `Folio::Ordinal` and naive `build_page` and `fill_page`
 methods.
 
-`build_page` will simply return a `Folio::BasicPage` (which will be
-decorated by `Folio::Ordinal` as described above) to hold the results.
-`fill_page` then selects an appropriate range of items from the folio
-using standard `Enumerable` methods, then calls `replace` on the page
-(subclass of `Array`, remember?) with this subset.
+`build_page` will simply return a basic ordinal page as from
+`Folio::Page::Ordinal.create`. `fill_page` then selects an appropriate
+range of items from the folio using standard `Enumerable` methods, then
+calls `replace` on the page (it's a decorated array) with this subset.
 
 This lets you do things like:
 

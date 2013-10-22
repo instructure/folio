@@ -3,14 +3,14 @@ require 'folio/core_ext/enumerable'
 
 describe Array do
   it "should be an ordinal folio" do
-    [].must_respond_to :build_page
+    assert_respond_to [], :build_page
     [].build_page.first_page.must_equal 1
   end
 
   describe "per_page" do
     it "should have per_page attribute as expected on instances" do
-      [].must_respond_to :per_page
-      [].must_respond_to :per_page=
+      assert_respond_to [], :per_page
+      assert_respond_to [], :per_page=
     end
 
     it "should not have per_page attribute on classes" do
@@ -33,7 +33,7 @@ describe Array do
 
     it "should return a page" do
       page = @ary.paginate
-      page.must_respond_to :current_page
+      assert_respond_to page, :current_page
     end
 
     it "should return appropriate slice" do

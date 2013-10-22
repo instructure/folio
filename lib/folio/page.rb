@@ -1,3 +1,5 @@
+require 'delegate'
+
 # Mix into any Enumerable. The mixin gives you the eight attributes and
 # one method described below.
 #
@@ -59,6 +61,19 @@ module Folio
       return nil unless total_entries && per_page && per_page > 0
       return 1 if total_entries <= 0
       (total_entries / per_page.to_f).ceil
+    end
+
+    class Decorator < ::SimpleDelegator
+      include Folio::Page
+    end
+
+    def self.decorate(collection)
+      collection = Folio::Page::Decorator.new(collection) unless collection.is_a?(Folio::Page)
+      collection
+    end
+
+    def self.create
+      decorate([])
     end
   end
 end
