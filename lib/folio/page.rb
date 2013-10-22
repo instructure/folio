@@ -1,3 +1,4 @@
+require 'folio/per_page'
 require 'delegate'
 
 # Mix into any Enumerable. The mixin gives you the eight attributes and
@@ -25,7 +26,7 @@ module Folio
     attr_accessor :current_page
 
     # number of items requested from the folio when filling the page.
-    attr_accessor :per_page
+    include Folio::PerPage
 
     # page identifier addressing the first page within the folio.
     attr_accessor :first_page

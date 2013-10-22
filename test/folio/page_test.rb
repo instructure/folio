@@ -47,6 +47,13 @@ describe Folio::Page do
       @page.per_page = 3
       @page.per_page.must_equal 3
     end
+
+    it "should default to Folio.per_page" do
+      was = Folio.per_page
+      Folio.per_page = 100
+      @page.per_page.must_equal Folio.per_page
+      Folio.per_page = was
+    end
   end
 
   describe "first_page" do
