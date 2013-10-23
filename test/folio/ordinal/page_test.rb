@@ -93,6 +93,37 @@ describe Folio::Ordinal::Page do
     @page.previous_page.must_equal 2
   end
 
+  describe "out_of_bounds?" do
+    it "should be false if in first_page..last_page range" do
+      @page.current_page = 1
+      @page.out_of_bounds?.must_equal false
+
+      @page.current_page = 3
+      @page.out_of_bounds?.must_equal false
+    end
+
+    it "should be true if negative page" do
+      @page.current_page = -1
+      @page.out_of_bounds?.must_equal true
+    end
+
+    it "should be true if zero page" do
+      @page.current_page = 0
+      @page.out_of_bounds?.must_equal true
+    end
+
+    it "should be true after known last_page" do
+      @page.current_page = 4
+      @page.out_of_bounds?.must_equal true
+    end
+
+    it "should not care about large numbers when total_pages not known" do
+      @page.total_entries = nil
+      @page.current_page = 50
+      @page.out_of_bounds?.must_equal false
+    end
+  end
+
   describe "decorate" do
     before do
       @page = Folio::Ordinal::Page.decorate([])

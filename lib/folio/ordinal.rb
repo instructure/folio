@@ -23,8 +23,7 @@ module Folio
     def configure_pagination(page, options)
       page = super(::Folio::Ordinal::Page.decorate(page), options)
       raise ::Folio::InvalidPage unless page.current_page.is_a?(Integer)
-      raise ::Folio::InvalidPage if page.current_page < page.first_page
-      raise ::Folio::InvalidPage if page.last_page && page.current_page > page.last_page
+      raise ::Folio::InvalidPage if page.out_of_bounds?
       page
     end
 

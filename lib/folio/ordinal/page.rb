@@ -60,6 +60,10 @@ module Folio
         current_page > first_page ? current_page - 1 : nil
       end
 
+      def out_of_bounds?
+        (current_page < first_page) || (last_page && current_page > last_page) || false
+      end
+
       class Decorator < Folio::Page::Decorator
         include Folio::Ordinal::Page
       end
