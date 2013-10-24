@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'folio/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "folio-pagination"
+  spec.name          = "folio-pagination-legacy"
   spec.version       = Folio::VERSION
   spec.authors       = ["Jacob Fugal"]
   spec.email         = ["jacob@instructure.com"]
@@ -13,8 +13,11 @@ Gem::Specification.new do |spec|
     Folio is a library for pagination. It's meant to be nearly compatible
     with WillPaginate, but with broader -- yet more well-defined -- semantics
     to allow for sources whose page identifiers are non-ordinal.
+
+    This version of the gem is for legacy Rails 2.3 support. If you're running
+    Rails 3 or newer, you want the folio-pagination gem.
   }
-  spec.homepage      = "https://github.com/instructure/folio"
+  spec.homepage      = "https://github.com/instructure/folio/tree/legacy"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
