@@ -64,8 +64,26 @@ module Folio
         (current_page < first_page) || (last_page && current_page > last_page) || false
       end
 
+      def offset
+        (current_page - 1) * per_page
+      end
+
       class Decorator < Folio::Page::Decorator
         include Folio::Ordinal::Page
+      end
+
+      class DecoratedArray < Decorator
+        def initialize
+          super []
+        end
+
+        def replace(array)
+          result = super
+          if total_entries.nil? and length < per_page and (current_page == 1 or length > 0)
+            self.total_entries = offset + length
+          end
+          result
+        end
       end
 
       def self.decorate(collection)
@@ -74,7 +92,7 @@ module Folio
       end
 
       def self.create
-        decorate([])
+        Folio::Ordinal::Page::DecoratedArray.new
       end
     end
   end

@@ -68,13 +68,19 @@ module Folio
       include Folio::Page
     end
 
+    class DecoratedArray < Decorator
+      def initialize
+        super []
+      end
+    end
+
     def self.decorate(collection)
       collection = Folio::Page::Decorator.new(collection) unless collection.is_a?(Folio::Page)
       collection
     end
 
     def self.create
-      decorate([])
+      Folio::Page::DecoratedArray.new
     end
   end
 end
