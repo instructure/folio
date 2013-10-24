@@ -11,3 +11,7 @@ group :will_paginate do
   gem 'activerecord', '>= 3.0'
   gem 'will_paginate', '~> 3.0'
 end
+
+group :test do
+  gem 'sqlite3'
+end
