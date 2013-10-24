@@ -1,4 +1,9 @@
-require 'will_paginate/active_record'
+begin
+  require 'will_paginate/active_record'
+rescue LoadError
+  raise "folio-pagination's activerecord support requires will_paginate"
+end
+
 require 'folio/page'
 require 'folio/ordinal'
 require 'folio/ordinal/page'
