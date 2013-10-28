@@ -1,7 +1,17 @@
 # place WillPaginate's versions in place first to ensure the folio versions
 # included later are used
-require 'active_record'
-require 'will_paginate/finder'
+begin
+  require 'active_record'
+rescue LoadError
+  raise "folio-pagination-legacy's activerecord support requires activerecord"
+end
+
+begin
+  require 'will_paginate/finder'
+rescue LoadError
+  raise "folio-pagination-legacy's activerecord support requires will_paginate"
+end
+
 ActiveRecord::Base.send :include, WillPaginate::Finder
 ActiveRecord::Associations::AssociationCollection.send :include, WillPaginate::Finder::ClassMethods
 
