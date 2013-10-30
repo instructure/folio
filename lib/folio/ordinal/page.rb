@@ -7,6 +7,8 @@ require 'folio/page'
 #
 #  * first_page is always 1
 #
+#  * current_page is forced to an integer
+#
 #  * previous_page is always either current_page-1 or nil, depending on how
 #    current_page relates to first_page.
 #
@@ -14,6 +16,8 @@ require 'folio/page'
 #    known, next_page will be either current_page+1 or nil, depending on how
 #    current_page relates to last_page. if total_pages is unknown and next_page
 #    is unset (vs. explicitly set to nil), it will default to current_page+1.
+#    if next_page is set to a non-nil value, that value will be forced to an
+#    integer.
 #
 #  * last_page is deterministic: always total_pages if total_pages is known,
 #    current_page if total_pages is unknown and next_page is nil, nil otherwise
@@ -34,8 +38,12 @@ module Folio
         (total_pages || next_page) ? total_pages : current_page
       end
 
+      def current_page=(value)
+        @current_page = value.to_i
+      end
+
       def next_page=(value)
-        @next_page = value
+        @next_page = value && value.to_i
       end
 
       def next_page

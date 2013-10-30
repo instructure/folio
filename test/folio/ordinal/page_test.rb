@@ -18,6 +18,11 @@ describe Folio::Ordinal::Page do
     @page.first_page.must_equal 1
   end
 
+  it "should force current_page to an integer" do
+    @page.current_page = "3"
+    @page.current_page.must_equal 3
+  end
+
   describe "when total pages known" do
     it "should have last_page=total_pages" do
       @page.last_page.must_equal @page.total_pages
@@ -74,6 +79,16 @@ describe Folio::Ordinal::Page do
     it "should have next_page=current_page+1 when not explicitly set" do
       @page.current_page = 2
       @page.next_page.must_equal 3
+    end
+
+    it "should force non-nil set next_page to an integer" do
+      @page.next_page = "4"
+      @page.next_page.must_equal 4
+    end
+
+    it "should not force nil set next_page to an integer" do
+      @page.next_page = nil
+      @page.next_page.must_be_nil
     end
 
     it "should have next_page=set value when explicitly set" do

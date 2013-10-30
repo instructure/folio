@@ -33,5 +33,17 @@ describe Folio::PerPage do
       @object.per_page(100)
       @object.per_page.must_equal 100
     end
+
+    it "should cast to integer when setting non-nil through argument" do
+      @object.per_page("100")
+      @object.per_page.must_equal 100
+    end
+
+    it "should allow setting to nil through argument" do
+      @klass.send(:define_method, :default_per_page) { 100 }
+      @object.per_page(30)
+      @object.per_page(nil)
+      @object.per_page.must_equal 100
+    end
   end
 end

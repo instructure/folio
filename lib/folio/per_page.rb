@@ -6,7 +6,7 @@ module Folio
 
     def per_page(*args)
       raise ArgumentError if args.size > 1
-      @per_page = args.first if args.size > 0
+      @per_page = (args.first && args.first.to_i) if args.size > 0
       @per_page ? @per_page : default_per_page
     end
 
