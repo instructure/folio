@@ -36,8 +36,8 @@ module Folio
 
         def paginate_with_wp_count(options={})
           unless options.has_key?(:total_entries)
-            page = options.fetch(:page) { 1 }
-            per_page = options.fetch(:per_page) { self.per_page }
+            page = (options.fetch(:page) { 1 }).to_i
+            per_page = (options.fetch(:per_page) { self.per_page }).to_i
             offset = (page - 1) * per_page
             options[:total_entries] = wp_count({}, [:all, {offset: offset, limit: per_page}], 'find')
           end

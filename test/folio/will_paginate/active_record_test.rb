@@ -103,5 +103,11 @@ describe ActiveRecord do
       page = item.related_things.paginate(page: 2, per_page: 10)
       page.count.must_equal 2
     end
+
+    it "should work when autocounting with string page/per_page" do
+      page = Item.paginate(page: "3", per_page: "10")
+      page.size.must_equal 4
+      page.total_entries.must_equal 24
+    end
   end
 end
