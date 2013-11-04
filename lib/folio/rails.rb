@@ -13,6 +13,7 @@ end
 
 require 'folio/will_paginate/view_helpers'
 
+ActionView::Base.send :include, WillPaginate::ViewHelpers
 if defined?(ActionController::Base) and ActionController::Base.respond_to? :rescue_responses
   ActionController::Base.rescue_responses['Folio::InvalidPage'] = :not_found
 end
