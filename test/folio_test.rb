@@ -85,6 +85,16 @@ describe Folio do
         page = @folio.paginate
         page.current_page.must_equal page.first_page
       end
+
+      it "should set to the page's first_page if explicitly nil" do
+        page = @folio.paginate(page: nil)
+        page.current_page.must_equal page.first_page
+      end
+
+      it "should not set to the page's first_page if explicitly false" do
+        page = @folio.paginate(page: false)
+        page.current_page.must_equal false
+      end
     end
 
     describe "per_page parameter" do
