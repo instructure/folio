@@ -45,7 +45,9 @@ module Folio
   end
 
   def configure_pagination(page, options)
-    page.current_page = options.fetch(:page) { page.first_page }
+    current_page = options.fetch(:page) { nil }
+    current_page = page.first_page if current_page.nil?
+    page.current_page = current_page
     page.per_page = options.fetch(:per_page) { self.per_page }
     page.total_entries = options.fetch(:total_entries) { self.respond_to?(:count) ? self.count : nil }
     page
