@@ -81,3 +81,4 @@ end
 # load the other commonly used portions of the gem
 require "folio/page"
 require "folio/ordinal"
+require "folio/ordinal/page"
