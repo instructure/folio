@@ -5,7 +5,7 @@ describe Folio::Ordinal do
   before do
     klass = Class.new do
       def build_page
-        Folio::Page.create
+        Folio::Ordinal::Page.create
       end
 
       def fill_page(page)
@@ -18,11 +18,6 @@ describe Folio::Ordinal do
   end
 
   describe "paginate" do
-    it "should decorate the result of build_page" do
-      @page = @folio.paginate
-      @page.is_a?(Folio::Ordinal::Page).must_equal true
-    end
-
     describe "bounds checking" do
       before do
         @folio.per_page = 10

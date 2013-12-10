@@ -152,13 +152,14 @@ methods as `Folio::Page` but with the following overrides:
 Similarly, mixing `Folio::Ordinal` into a source provides the same
 methods as `Folio`, but simplifies your `build_page` and `fill_page`
 methods by moving some responsibility into the `paginate` method.
+`build_page` also has a default implementation.
 
  * `build_page` no longer needs to configure `ordinal_page?`, `first_page`,
    or `last_page` on the instantiated page. Instead, just instantiate
-   and return a `Folio::Page` or `Folio::Ordinal::Page`. If what you
-   return is not a `Folio::Ordinal::Page`, `paginate` will decorate it
-   to be one. Then `ordinal_page?`, `first_page`, and `last_page` are
-   handled for you, as described above.
+   and return a `Folio::Page` or `Folio::Ordinal::Page`. Then
+   `ordinal_page?`, `first_page`, and `last_page` are handled for you,
+   as described above. If not provided, the default implementation just
+   returns a subclass of `Array` setup to be a `Folio::Ordinal::Page`.
 
  * `fill_page` no longer needs to configure `next_page` and
    `previous_page`; the ordinal page will handle them. (Note that if
@@ -166,31 +167,28 @@ methods by moving some responsibility into the `paginate` method.
    `paginate` will now perform ordinal bounds checking for you, so you
    can focus entirely on populating the page.
 
-### Decorations and `create`
+### `BasicPage`s and `create`
 
-Often times you just want to take a simple collection, such as an
-array, and have it act like a page. One way would be to subclass
-`Array` and mixin `Folio::Page`, then instantiate the subclass.
+Often times you just want to take the simplest collection possible. One
+way would be to subclass `Array` and mixin `Folio::Page`, then
+instantiate the subclass. When you want to add more, or `Array` isn't the
+proper superclass, you can still do this.
 
-Alternately, you can just call `Folio::Page.decorate(collection)`. This
-will decorate the collection instance in a delegate that mixes in
-`Folio::Page` for you. So, for example, a simple `build_page` method
-could just be:
+For the common case we've already done it. This is the
+`Folio::BasicPage` class. We've also provided a shortcut for
+instantiating one: `Folio::Page.create`. So, for example, a simple
+`build_page` method could just be:
 
 ```
   def build_page
-    Folio::Page.decorate([])
+    page = Folio::Page.create
+    # setup ordinal_pages?, first_page, etc.
+    page
   end
 ```
 
-For the common case where a new empty array is what you intend to
-decorate, you can simply call `Folio::Page.create`.
-
-`Folio::Page::Ordinal.decorate(collection)` and
-`Folio::Page::Ordinal.create` are also available, respectively, for the
-ordinal case. `decorate` will assume the passed in collection lacks any
-pagination and will include `Folio::Page` along with
-`Folio::Page::Ordinal`.
+`Folio::Ordinal::BasicPage` and `Folio::Ordinal::Page.create` are also
+available, respectively, for the ordinal case.
 
 ### Enumerable Extension
 
@@ -201,7 +199,8 @@ methods.
 `build_page` will simply return a basic ordinal page as from
 `Folio::Page::Ordinal.create`. `fill_page` then selects an appropriate
 range of items from the folio using standard `Enumerable` methods, then
-calls `replace` on the page (it's a decorated array) with this subset.
+calls `replace` on the page (it's a `Folio::Ordinal::BasicPage`) with
+this subset.
 
 This lets you do things like:
 

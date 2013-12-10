@@ -60,8 +60,6 @@ module Folio
             @target = target
           end
 
-          # needed to prevent Folio::Ordinal#configure_pagination from trying
-          # to decorate it
           include Folio::Ordinal::Page
 
           # called during Folio#configure_pagination, used to build up @rel

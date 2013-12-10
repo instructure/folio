@@ -139,21 +139,21 @@ describe Folio::Ordinal::Page do
     end
   end
 
-  describe "decorate" do
+  describe "BasicPage" do
     before do
-      @page = Folio::Ordinal::Page.decorate([])
+      @page = Folio::Ordinal::BasicPage.new
     end
 
-    it "should add page methods to the object" do
+    it "should be an Array" do
+      (Array === @page).must_equal true
+    end
+
+    it "should be a folio page" do
       assert_respond_to @page, :current_page
     end
 
-    it "should add ordinal page methods to the object" do
+    it "should be a ordinal folio page" do
       @page.first_page.must_equal 1
-    end
-
-    it "should preserve other methods on the object" do
-      assert_respond_to @page, :each
     end
   end
 
@@ -162,12 +162,8 @@ describe Folio::Ordinal::Page do
       @page = Folio::Ordinal::Page.create
     end
 
-    it "should be an Array at heart" do
-      @page.must_be :is_a?, Array
-    end
-
-    it "should be decorated as an ordinal page" do
-      @page.first_page.must_equal 1
+    it "should be a basic ordinal page" do
+      @page.class.must_equal Folio::Ordinal::BasicPage
     end
   end
 end

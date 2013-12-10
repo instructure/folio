@@ -4,12 +4,12 @@ require 'folio/invalid_page'
 
 # Mix in to a source to provide the same methods as Folio, but with simpler
 # build_page and fill_page methods required on the host (some responsibility is
-# moved into the paginate method).
+# moved into the paginate method). build_page also has a default implementation.
 #
 #  * build_page no longer needs to configure ordinal_page?, first_page,
 #    or last_page on the instantiated page. Instead, just instantiate
-#    and return a Folio::Ordinal::Page. If what you return is not a
-#    Folio::Ordinal::Page, paginate will decorate it to be one.
+#    and return a Folio::Ordinal::Page. If not provided, the default
+#    implementation just returns a Folio::Ordinal::BasicPage.
 #
 #  * fill_page no longer needs to configure next_page and previous_page; the
 #    ordinal page will handle them. (Note that if necessary, you can still set
@@ -18,10 +18,13 @@ require 'folio/invalid_page'
 #
 module Folio
   module Ordinal
-    # decorate the page before configuring, and then validate the configured
-    # current_page before returning it
+    def build_page
+      Folio::Ordinal::Page.create
+    end
+
+    # validate the configured page before returning it
     def configure_pagination(page, options)
-      page = super(::Folio::Ordinal::Page.decorate(page), options)
+      page = super(page, options)
       raise ::Folio::InvalidPage unless page.current_page.is_a?(Integer)
       raise ::Folio::InvalidPage if page.out_of_bounds?
       page
