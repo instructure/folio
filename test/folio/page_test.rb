@@ -168,17 +168,17 @@ describe Folio::Page do
     end
   end
 
-  describe "decorate" do
+  describe "BasicPage" do
     before do
-      @page = Folio::Page.decorate([])
+      @page = Folio::BasicPage.new
     end
 
-    it "should add page methods to the object" do
+    it "should be an Array" do
+      (Array === @page).must_equal true
+    end
+
+    it "should be a folio page" do
       assert_respond_to @page, :current_page
-    end
-
-    it "should preserve other methods on the object" do
-      assert_respond_to @page, :each
     end
   end
 
@@ -187,12 +187,8 @@ describe Folio::Page do
       @page = Folio::Page.create
     end
 
-    it "should be an Array at heart" do
-      @page.must_be :is_a?, Array
-    end
-
-    it "should be decorated as a page" do
-      assert_respond_to @page, :current_page
+    it "should be a basic page" do
+      @page.class.must_equal Folio::BasicPage
     end
   end
 end

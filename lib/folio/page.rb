@@ -64,23 +64,12 @@ module Folio
       (total_entries / per_page.to_f).ceil
     end
 
-    class Decorator < ::SimpleDelegator
-      include Folio::Page
-    end
-
-    class DecoratedArray < Decorator
-      def initialize
-        super []
-      end
-    end
-
-    def self.decorate(collection)
-      collection = Folio::Page::Decorator.new(collection) unless collection.is_a?(Folio::Page)
-      collection
-    end
-
     def self.create
-      Folio::Page::DecoratedArray.new
+      Folio::BasicPage.new
     end
+  end
+
+  class BasicPage < Array
+    include Folio::Page
   end
 end
