@@ -94,6 +94,11 @@ describe ActiveRecord do
       page.total_entries.must_equal 24
     end
 
+    it "should correctly auto-count total_entries with a grouping" do
+      page = Item.group(:filter).paginate
+      page.total_entries.must_equal 2
+    end
+
     it "should work with total_entries nil" do
       page = Item.paginate(page: 3, total_entries: nil)
       page.current_page.must_equal 3
