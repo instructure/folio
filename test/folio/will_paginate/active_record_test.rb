@@ -40,33 +40,27 @@ describe ActiveRecord do
       page.is_a?(Folio::Ordinal::Page).must_equal true
     end
 
-    it "should still return a relation" do
+    it "should return an instantiated page" do
       page = Item.paginate
-      page.is_a?(ActiveRecord::Relation).must_equal true
+      page.is_a?(Array).must_equal true
     end
 
-    it "should set limit_value according to per_page" do
-      page = Item.paginate(per_page: 10)
-      page.limit_value.must_equal 10
-    end
-
-    it "should use that limit_value as per_page attribute" do
+    it "should respect per_page" do
       page = Item.paginate(per_page: 10)
       page.per_page.must_equal 10
     end
 
-    it "should default limit_value/per_page to model's per_page" do
+    it "should default per_page to model's per_page" do
       was = Item.per_page
       Item.per_page = 10
       page = Item.paginate
-      page.limit_value.must_equal 10
       page.per_page.must_equal 10
       Item.per_page = was
     end
 
     it "should set offset from page and per_page" do
       page = Item.paginate(page: 3, per_page: 10)
-      page.offset_value.must_equal 20
+      page.offset.must_equal 20
     end
 
     it "should set current_page" do
@@ -74,19 +68,19 @@ describe ActiveRecord do
       page.current_page.must_equal 3
     end
 
-    it "should have the right count on the unloaded page" do
+    it "should have the right count" do
       page = Item.paginate(page: 3, per_page: 10)
       page.count.must_equal 4
     end
 
-    it "should have the right size on the unloaded page" do
+    it "should have the right size" do
       page = Item.paginate(page: 3, per_page: 10)
       page.size.must_equal 4
     end
 
     it "should return the expected items" do
       page = Item.paginate(page: 3, per_page: 10)
-      page.to_a.must_equal Item.offset(20).all
+      page.must_equal Item.offset(20).all
     end
 
     it "should auto-count total_entries unless specified as nil" do

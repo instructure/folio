@@ -124,7 +124,7 @@ module Folio
               options[:total_entries] = except(:group).select(group_values).uniq.count
             end
           end
-          super(options)
+          super(options).all
         end
       end
 
