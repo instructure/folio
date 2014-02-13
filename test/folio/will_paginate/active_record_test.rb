@@ -103,6 +103,11 @@ describe ActiveRecord do
       page.current_page.must_equal 3
     end
 
+    it "should work with per_page nil" do
+      page = Item.paginate(per_page: nil)
+      page.per_page.must_equal Folio.per_page
+    end
+
     it "should validate page number against auto-counted total_entries" do
       lambda{ Item.paginate(page: 4, per_page: 10) }.must_raise Folio::InvalidPage
     end
