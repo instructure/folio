@@ -121,7 +121,11 @@ module Folio
               # total_entries left to an auto-count, but the relation being
               # paginated has a grouping. we need to do a special count, lest
               # self.count give us a hash instead of the integer we expect.
-              options[:total_entries] = except(:group).select(group_values).uniq.count
+              if self.scoped.having_values.empty?
+                options[:total_entries] = except(:group).select(group_values).uniq.count
+              else
+                options[:total_entries] = unscoped.from("(#{to_sql}) a").count
+              end
             end
           end
           super(options)
