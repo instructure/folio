@@ -28,6 +28,7 @@ module Folio
 
         # don't need early access to our stuff, but will_paginate loaded
         # theirs, so we better patch it up now rather than later
+        require 'folio/will_paginate/collection'
         require 'folio/will_paginate/view_helpers'
       end
     end
