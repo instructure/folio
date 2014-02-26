@@ -28,6 +28,8 @@ module Folio
       raise ::Folio::InvalidPage unless page.current_page.is_a?(Integer)
       raise ::Folio::InvalidPage if page.out_of_bounds?
       page
+    rescue ::WillPaginate::InvalidPage
+      raise ::Folio::InvalidPage
     end
 
     # otherwise acts like a normal folio

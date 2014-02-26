@@ -110,6 +110,18 @@ describe ActiveRecord do
 
     it "should validate page number against auto-counted total_entries" do
       lambda{ Item.paginate(page: 4, per_page: 10) }.must_raise Folio::InvalidPage
+      end
+
+    it "should raise on negative page" do
+      lambda{ Item.paginate(page: -1) }.must_raise Folio::InvalidPage
+    end
+
+    it "should raise on page of 0" do
+      lambda{ Item.paginate(page: 0) }.must_raise Folio::InvalidPage
+    end
+
+    it "should raise on page greater than known last_page" do
+      lambda{ Item.paginate(page: 4, total_entries: 30) }.must_raise Folio::InvalidPage
     end
 
     it "should work on relations" do
