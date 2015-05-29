@@ -7,8 +7,7 @@ group :development do
 end
 
 group :will_paginate do
-  gem 'rails', '>= 3.0'
-  gem 'will_paginate', '~> 3.0'
+  gem 'rails', '>= 3.0', '< 4.1'
 end
 
 group :test do
