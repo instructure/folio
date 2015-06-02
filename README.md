@@ -22,6 +22,20 @@ Or install it yourself as:
 
     $ gem install folio-pagination
 
+### Rails Support
+
+To use Folio's optional Rails support, you will need to load the 'will_paginate'
+gem into your application along with folio, but don't require it. For
+instance in your Gemfile:
+
+    gem 'will_paginate', require: false
+
+And then you can:
+
+    require 'folio/rails'
+
+This will load just the necessary portions of the will_paginate gem.
+
 ## Usage
 
 The core `Folio` interface is defined by two mixins. Mixing `Folio` into
