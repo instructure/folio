@@ -49,7 +49,18 @@ module Folio
     current_page = page.first_page if current_page.nil?
     page.current_page = current_page
     page.per_page = options[:per_page] || self.per_page
-    page.total_entries = options.fetch(:total_entries) { self.respond_to?(:count) ? self.count : nil }
+
+    page.total_entries = options.fetch(:total_entries) do
+      if self.respond_to?(:count)
+        if self.is_a?(::ActiveRecord::Relation) && ::Rails.version >= '4'
+          self.count(:all)
+        else
+          self.count
+        end
+      else
+        nil
+      end
+    end
     page
   end
 
