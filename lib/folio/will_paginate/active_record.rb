@@ -120,7 +120,7 @@ module Folio
                       self.scoped
                     elsif self.is_a?(::ActiveRecord::Relation)
                       self
-                    elsif self.is_a?(::ActiveRecord::Base)
+                    elsif self < ::ActiveRecord::Base
                       self.all
                     else
                       self.scope
