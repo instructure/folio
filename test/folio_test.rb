@@ -68,6 +68,7 @@ describe Folio do
     end
 
     it "should populate current_page and per_page before passing it to fill_page" do
+      @klass.send(:remove_method, :fill_page)
       @klass.send(:define_method, :fill_page) do |page|
         page.current_page.wont_be_nil
         page.per_page.wont_be_nil

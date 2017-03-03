@@ -130,8 +130,13 @@ module Folio
               # total_entries left to an auto-count, but the relation being
               # paginated has a grouping. we need to do a special count, lest
               # self.count give us a hash instead of the integer we expect.
-              if scope.having_values.empty? && group_values.length == 1 # multi-column distinct counts are broken right now (as of rails 4.2.5) :(
-                options[:total_entries] = except(:group, :select).select(group_values).uniq.count
+              having_clause_empty = Rails.version < '5' ? scope.having_values.empty? : scope.having_clause.empty?
+              if having_clause_empty && group_values.length == 1 # multi-column distinct counts are broken right now (as of rails 4.2.5) :(
+                if Rails.version < '5'
+                  options[:total_entries] = except(:group, :select).select(group_values).uniq.count
+                else
+                  options[:total_entries] = except(:group, :select).select(group_values).distinct.count
+                end
               else
                 options[:total_entries] = unscoped.from("(#{to_sql}) a").count
               end

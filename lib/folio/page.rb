@@ -31,6 +31,10 @@ module Folio
     # page identifier addressing the first page within the folio.
     attr_accessor :first_page
 
+    def initialize
+      @last_page = nil
+    end
+
     # page identifier addressing the final page within the folio, if
     # known.
     def last_page=(value)
